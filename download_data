@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 tmp_dir=./tmp_ds_data
+datasets_dir=./datasets
 base_download_url="https://github.com/WickedElm/feature_residuals_with_pretraining_rnn/releases/download/v1.0.0"
 
 # Create data directory if needed
@@ -10,6 +11,13 @@ then
     chmod 755 ${tmp_dir}
 fi
 
+# Create data directory if needed
+if [ ! -d ${datasets_dir} ];
+then
+    mkdir ${datasets_dir}
+    chmod 755 ${datasets_dir}
+fi
+
 echo "Downloading data."
 
 ###
@@ -17,14 +25,13 @@ echo "Downloading data."
 ###
 wget -q ${base_download_url}/datasets.aa
 wget -q ${base_download_url}/datasets.ab
-wget -q ${base_download_url}/datasets.ac
-wget -q ${base_download_url}/datasets.ad
-wget -q ${base_download_url}/datasets.ae
-wget -q ${base_download_url}/datasets.af
-wget -q ${base_download_url}/datasets.ag
-cat datasets.aa datasets.ab datasets.ac datasets.ad datasets.ae datasets.af datasets.ag > datasets.tar.gz
-tar xfz datasets.tar.gz
-rm -f datasets.tar.gz datasets.aa datasets.ab datasets.ac datasets.ad datasets.ae datasets.af datasets.ag
+cat datasets.aa datasets.ab > datasets.tar.gz
+mv datasets.tar.gz ${datasets_dir}/
+cd ${datasets_dir}
+tar xfz ./datasets.tar.gz
+rm -f datasets.tar.gz 
+cd -
+rm -f datasets.aa datasets.ab
 
 ###
 # UNSW_NB15
