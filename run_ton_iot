@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+cd `dirname $0`
+
+tmp_dir=./tmp_ds_data
+output_dir=./output
+base_download_url="https://github.com/WickedElm/feature_residuals_with_pretraining_rnn/releases/download/v1.0.0"
+
+# Create data directory if needed
+if [ ! -d ${tmp_dir} ];
+then
+    echo "Data directory not found.  Executing ./download_data"
+    ./download_data
+fi
+
+if [ ! -d ${output_dir} ];
+then
+    mkdir ${output_dir}
+    chmod 755 ${output_dir}
+fi
+
+###
+# TON-IOT 
+###
+training_file=conference_extended_val_test_sf_time_series_ton_iot_ae_tuning_train.pkl
+validation_file=conference_extended_val_test_sf_time_series_ton_iot_ae_tuning_validation.pkl
+test_file=conference_extended_val_test_sf_time_series_ton_iot_ae_tuning_test.pkl
+
+save_prefix="sf_time_series_ton_iot"
+dataset="sf_time_series_ton_iot"
+dataset_path=`pwd`/datasets/ton_iot/sf_time_series_ton_iot/sf_time_series_ton_iot.pkl
+
+# Get date for results  dir
+cdate=$(date +%Y%m%d)
+cseconds=$(date +%s%N)
+timestamp=${cdate}_${cseconds}
+epochs="1000"
+pretraining_epochs="500"
+clf_input_types="X L S XS LS XLS"
+sequence_length=25
+rnn_hidden_size=24
+rnn_num_layers=2
+lambda_filter=0.0 # Not used for this model
+tuning_lr=0.001 # Not used for this model
+clf_adadelta_lr=0.001
+main_experiment="time_series"
+
+for clf_input_type in `echo ${clf_input_types}`; do
+    project=${timestamp}_${save_prefix}_${clf_input_type}
+    experiment="${main_experiment}_${epochs}_${clf_input_type}"
+
+    python lightning_train_validate.py \
+        general.feature_transformer=s_threshold_feature_transformer.SThresholdFeatureTransformer \
+        general.project=${project} \
+        general.experiment=${experiment} \
+        general.num_epochs=${num_epochs} \
+        general.check_val_every_n_epoch=10 \
+        model=mtl_pretrain_rnn_clf \
+        model.pretraining_epochs=${pretraining_epochs} \
+        model.use_pretrained_ae=False \
+        model.rnn_hidden_size=${rnn_hidden_size} \
+        model.rnn_num_layers=${rnn_num_layers} \
+        model.clf_input_type=${clf_input_type} \
+        data_module=netflow_time_series_data_module \
+        data_module.data_path=${dataset_path} \
+        data_module.experiment=${experiment} \
+        data_module.number_training_samples=169326 \
+        data_module.number_validation_samples=84663 \
+        data_module.number_test_samples=84663 \
+        data_module.save_prefix=${save_prefix} \
+        data_module.prefix=conference_extended_val_test \
+        data_module.time_series_sequence_length=${sequence_len}
+done

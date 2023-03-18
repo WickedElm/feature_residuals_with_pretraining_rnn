@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+tmp_dir=./tmp_ds_data
+base_download_url="https://github.com/WickedElm/feature_residuals_with_pretraining_rnn/releases/download/v1.0.0"
+
+# Create data directory if needed
+if [ ! -d ${tmp_dir} ];
+then
+    mkdir ${tmp_dir}
+    chmod 755 ${tmp_dir}
+fi
+
+echo "Downloading data."
+
+###
+# Base datasets files.
+###
+wget -q ${base_download_url}/datasets.aa
+wget -q ${base_download_url}/datasets.ab
+wget -q ${base_download_url}/datasets.ac
+wget -q ${base_download_url}/datasets.ad
+wget -q ${base_download_url}/datasets.ae
+wget -q ${base_download_url}/datasets.af
+wget -q ${base_download_url}/datasets.ag
+cat datasets.aa datasets.ab datasets.ac datasets.ad datasets.ae datasets.af datasets.ag > datasets.tar.gz
+tar xfz datasets.tar.gz
+rm -f datasets.tar.gz datasets.aa datasets.ab datasets.ac datasets.ad datasets.ae datasets.af datasets.ag
+
+###
+# UNSW_NB15
+###
+training_file=conference_extended_val_test_sf_unsw_nb15_time_series_ae_tuning_train.pkl
+validation_file=conference_extended_val_test_sf_unsw_nb15_time_series_ae_tuning_validation.pkl
+test_file=conference_extended_val_test_sf_unsw_nb15_time_series_ae_tuning_test.pkl
+
+wget -q ${base_download_url}/${training_file} -O ${tmp_dir}/${training_file}
+wget -q ${base_download_url}/${test_file} -O ${tmp_dir}/${test_file}
+wget -q ${base_download_url}/${validation_file} -O ${tmp_dir}/${validation_file}
+
+###
+# TON-IOT
+###
+training_file=conference_extended_val_test_sf_time_series_ton_iot_ae_tuning_train.pkl
+validation_file=conference_extended_val_test_sf_time_series_ton_iot_ae_tuning_validation.pkl
+test_file=conference_extended_val_test_sf_time_series_ton_iot_ae_tuning_test.pkl
+
+wget -q ${base_download_url}/${training_file} -O ${tmp_dir}/${training_file}
+wget -q ${base_download_url}/${test_file} -O ${tmp_dir}/${test_file}
+wget -q ${base_download_url}/${validation_file} -O ${tmp_dir}/${validation_file}
+
+###
+# CTU13 Scenario 6
+###
+training_file=conference_extended_val_test_sf_time_series_scenario_6_ae_tuning_train.pkl
+validation_file=conference_extended_val_test_sf_time_series_scenario_6_ae_tuning_validation.pkl
+test_file=conference_extended_val_test_sf_time_series_scenario_6_ae_tuning_test.pkl
+
+wget -q ${base_download_url}/${training_file} -O ${tmp_dir}/${training_file}
+wget -q ${base_download_url}/${test_file} -O ${tmp_dir}/${test_file}
+wget -q ${base_download_url}/${validation_file} -O ${tmp_dir}/${validation_file}
+
+###
+# CTU13 Scenario 9
+###
+training_file=conference_extended_val_test_sf_time_series_scenario_9_ae_tuning_train.pkl
+validation_file=conference_extended_val_test_sf_time_series_scenario_9_ae_tuning_validation.pkl
+test_file=conference_extended_val_test_sf_time_series_scenario_9_ae_tuning_test.pkl
+
+wget -q ${base_download_url}/${training_file} -O ${tmp_dir}/${training_file}
+wget -q ${base_download_url}/${test_file} -O ${tmp_dir}/${test_file}
+wget -q ${base_download_url}/${validation_file} -O ${tmp_dir}/${validation_file}
+
+###
+# CTU13 Scenario 13
+###
+training_file=conference_extended_val_test_sf_time_series_scenario_13_ae_tuning_train.pkl
+validation_file=conference_extended_val_test_sf_time_series_scenario_13_ae_tuning_validation.pkl
+test_file=conference_extended_val_test_sf_time_series_scenario_13_ae_tuning_test.pkl
+
+wget -q ${base_download_url}/${training_file} -O ${tmp_dir}/${training_file}
+wget -q ${base_download_url}/${test_file} -O ${tmp_dir}/${test_file}
+wget -q ${base_download_url}/${validation_file} -O ${tmp_dir}/${validation_file}
+
+echo "Downloading complete."
